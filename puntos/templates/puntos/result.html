@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resultado</title>
+</head>
+<body>
+    <h1>Resultado de la búsqueda</h1>
+    {% if error %}
+        <p>{{ error }}</p>
+    {% else %}
+        <p>Nombre: {{ nombre }}</p>
+        <p>Puntos: {{ puntos }}</p>
+    {% endif %}
+    <a href="{% url 'index' %}">Volver</a>
+</body>
+</html>

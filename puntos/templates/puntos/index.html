@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consulta de Pipi Puntos</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #d2b48c; /* Marrón claro */
+            color: #333;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        img {
+            max-width: 150px;
+            margin-bottom: 20px;
+        }
+
+        form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 400px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+            text-align: left;
+        }
+
+        input[type="text"],
+        input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        #qr-reader {
+            margin-bottom: 20px;
+        }
+
+        button {
+            background-color: #333;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+        }
+
+        button:hover {
+            background-color: #555;
+        }
+    </style>
+    <script src="https://unpkg.com/html5-qrcode/minified/html5-qrcode.min.js"></script>
+</head>
+<body>
+    <img src="{% static 'images/logo.png' %}" alt="Logo Pipi Insumos de Cerámica">
+    <h1>Consulta de Pipi Puntos</h1>
+    <form id="consulta-form" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label for="dni">Ingrese su DNI:</label>
+        <input type="text" id="dni" name="dni">
+        <label for="qr_image">O escanee su QR:</label>
+        <input type="file" id="qr_image" name="qr_image">
+        <div id="qr-reader" style="width: 100%;"></div>
+        <input type="hidden" id="qr_result" name="qr_result">
+        <button type="submit">Buscar</button>
+    </form>
+
+    <script>
+        function onScanSuccess(decodedText, decodedResult) {
+            // Verifica si el código QR tiene el formato esperado
+            if (decodedText.startsWith("https://pipi-puntos.fly.dev/dni=")) {
+                const dni = decodedText.split('=')[1];
+                document.getElementById('dni').value = dni;
+                document.getElementById('consulta-form').submit();
+            } else {
+                alert("Código QR no válido.");
+            }
+        }
+
+        function onScanError(errorMessage) {
+            console.warn(`Error de escaneo: ${errorMessage}`);
+        }
+
+        // Crear el escáner de QR
+        const html5QrCode = new Html5Qrcode("qr-reader");
+        html5QrCode.start(
+            { facingMode: "environment" }, // Utilizar la cámara trasera en dispositivos móviles
+            {
+                fps: 10, // Frames per second
+                qrbox: { width: 250, height: 250 } // Tamaño del cuadro de escaneo
+            },
+            onScanSuccess,
+            onScanError
+        ).catch(err => {
+            console.error(`Error iniciando el escaneo de QR: ${err}`);
+        });
+    </script>
+</body>
+</html>
