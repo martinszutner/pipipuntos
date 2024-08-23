@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="{{ STATIC_ROOT }} 'favicon.ico' " type="image/x-icon">
     <title>Consulta de Pipi Puntos</title>
     <style>
         body {
@@ -133,33 +135,33 @@
         {% if error %}
             <p>{{ error }}</p>
         {% else %}
-<div style="font-family: Arial, sans-serif; color: #333; text-align: center; padding: 20px;">
-    <h2 style="color: #007BFF;">¡Hola, {{ nombre }}!</h2>
-    <p style="font-size: 18px;">
-        <strong>¡Felicitaciones!</strong> Has acumulado <strong>{{ puntos }} Pipi-Puntos</strong> hasta hoy. 🎉
-    </p>
-    <p style="font-size: 16px;">
-        Estamos ansiosos por verte pronto para que sigas sumando más puntos y aprovechando grandes beneficios.
-    </p>
-    <p style="font-size: 16px;">¡Gracias por ser parte de nuestra comunidad!</p>
-</div>
+			<div style="font-family: Arial, sans-serif; color: #333; text-align: center; padding: 20px;">
+				<h2 style="color: #007BFF;">¡Hola, {{ nombre }}!</h2>
+				<p style="font-size: 18px;">
+					<strong>¡Felicitaciones!</strong> Has acumulado <strong>{{ puntos }} Pipi-Puntos</strong> hasta hoy. 🎉
+				</p>
+				<p style="font-size: 16px;">
+					Estamos ansiosos por verte pronto para que sigas sumando más puntos y aprovechando grandes beneficios.
+				</p>
+				<p style="font-size: 16px;">¡Gracias por ser parte de nuestra comunidad!</p>
+			</div>
         {% endif %}
      </div>
     {% endif %}
     <form id="consulta-form" method="post" enctype="multipart/form-data">
         {% csrf_token %}
 		<div id="reader">
-        <div class="input-group">
-            <input type="text" id="dni" name="dni" placeholder="Ingrese su DNI">
-            <button type="submit"><i class="fas fa-search"></i></button> <!-- Botón con ícono de lupa -->
-        </div>
-			<button type="button" id="boton_qr">Escanear QR</button> <!-- Botón QR -->
+			<div class="input-group">
+				<input type="text" id="dni" name="dni" placeholder="Ingrese su DNI">
+				<button type="submit"><i class="fas fa-search"></i></button> <!-- Botón con ícono de lupa -->
+			</div>
+				<button type="button" id="boton_qr">Escanear QR</button> <!-- Botón QR -->
 		</div> <!-- Campo de escaneo QR -->
-    <div id="qr-reader">
+		<div id="qr-reader">
 			<input type="file" id="qr_image" name="qr_image">
 			<div id="qr-reader" style="width: 100%;"></div>
 			<input type="hidden" id="qr_result" name="qr_result">
-	</div> <!-- Campo de escaneo QR -->
+		</div> <!-- Campo de escaneo QR -->
     </form>
 
 
