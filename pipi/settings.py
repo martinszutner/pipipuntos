@@ -11,7 +11,7 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Security Settings
-SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-_uo2e7_1rp)l=p89jz5o6^+q+$+w7q!rrf7gltu^2!#91n-_nb')
+SECRET_KEY = os.getenv('SECRET_KEY', 'gVTJqcISePY0Aj1VpWob32iC8H7j5pK45uwGW1QrB0r4F8ayDK')
 HOSTNAME = os.getenv('HOSTNAME', 'localhost')
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
