@@ -1,3 +1,17 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -7,7 +21,7 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #d2b48c; /* Marrón claro */
+            background-color: #f2e9de; /* Marrón claro */
             color: #333;
             text-align: center;
             margin: 0;
@@ -35,60 +49,154 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             width: 90%;
             max-width: 400px;
+            margin-bottom: 20px;
         }
 
-        label {
-            display: block;
-            margin-bottom: 10px;
-            font-weight: bold;
-            text-align: left;
+        .input-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
         }
 
-        input[type="text"],
-        input[type="file"] {
-            width: 100%;
+        .input-group input[type="text"] {
+            width: 85%;
             padding: 10px;
-            margin-bottom: 20px;
             border: 1px solid #ccc;
-            border-radius: 5px;
+            border-radius: 5px 0 0 5px; /* Borde redondeado solo en la izquierda */
+            margin: 0;
         }
 
-        #qr-reader {
-            margin-bottom: 20px;
-        }
-
-        button {
+        .input-group button {
+            width: 15%;
             background-color: #333;
             color: #fff;
-            padding: 10px 20px;
+            padding: 10px;
             border: none;
-            border-radius: 5px;
+            border-radius: 0 5px 5px 0; /* Borde redondeado solo en la derecha */
             cursor: pointer;
-            font-size: 16px;
-            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
-        button:hover {
+        .input-group button:hover {
             background-color: #555;
         }
+
+        .input-group button i {
+            font-size: 18px; /* Tamaño del icono */
+        }
+
+
+        #reader button {
+            width: 100%;
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            border: none;
+            border-radius: 5px 5px 5px 5px; /* Borde redondeado solo en la derecha */
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #reader button:hover {
+            background-color: #555;
+        }
+		
+        #qr-reader {
+            display: none; /* Oculto por defecto */
+            margin-bottom: 20px;
+        }
+
+        .result {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 400px;
+            margin-top: 20px;
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+        .result p {
+            margin: 10px 0;
+        }
+
+        .result a {
+            color: #333;
+            text-decoration: none;
+            font-weight: bold;
+        }
     </style>
-    <script src="https://unpkg.com/html5-qrcode/minified/html5-qrcode.min.js"></script>
+    <!-- Asegúrate de que FontAwesome esté cargado para los iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
 </head>
 <body>
-    <img src="{% static 'images/logo.png' %}" alt="Logo Pipi Insumos de Cerámica">
+    
+    <img alt="Logo Pipi Insumos de Cerámica" src="https://github.com/martinszutner/pipipuntos/blob/main/static/images/pipi_logo.png?raw=true" data-hpc="true" class="Box-sc-g0xbh4-0 kzRgrI">
+    
     <h1>Consulta de Pipi Puntos</h1>
+    {% if nombre or error %}
+    <div class="result">
+        <h2></h2>
+        {% if error %}
+            <p>{{ error }}</p>
+        {% else %}
+            <p>Hola {{ nombre }}</p>
+            <p>Hasta hoy tenes {{ puntos }} <strong>Pipi-Puntos </strong>acumulados</p>
+            <p>Te esperamos pronto para que sigas sumando puntos</p>
+        {% endif %}
+     </div>
+    {% endif %}
     <form id="consulta-form" method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        <label for="dni">Ingrese su DNI:</label>
-        <input type="text" id="dni" name="dni">
-        <label for="qr_image">O escanee su QR:</label>
-        <input type="file" id="qr_image" name="qr_image">
-        <div id="qr-reader" style="width: 100%;"></div>
-        <input type="hidden" id="qr_result" name="qr_result">
-        <button type="submit">Buscar</button>
+		<div id="reader">
+        <div class="input-group">
+            <input type="text" id="dni" name="dni" placeholder="Ingrese su DNI">
+            <button type="submit"><i class="fas fa-search"></i></button> <!-- Botón con ícono de lupa -->
+        </div>
+			<button type="button" id="boton_qr">Escanear QR</button> <!-- Botón QR -->
+		</div> <!-- Campo de escaneo QR -->
+    <div id="qr-reader">
+			<input type="file" id="qr_image" name="qr_image">
+			<div id="qr-reader" style="width: 100%;"></div>
+			<input type="hidden" id="qr_result" name="qr_result">
+	</div> <!-- Campo de escaneo QR -->
     </form>
 
+
+
+
+
+
+
+
     <script>
+        document.getElementById('boton_qr').addEventListener('click', function() {
+            // Ocultar el formulario y mostrar el campo de escaneo QR
+            document.getElementById('reader').style.display = 'none';
+            document.getElementById('qr-reader').style.display = 'block';
+
+            // Iniciar el escaneo de QR
+            const html5QrCode = new Html5Qrcode("qr-reader");
+            html5QrCode.start(
+                { facingMode: "environment" }, // Utilizar la cámara trasera en dispositivos móviles
+                {
+                    fps: 10, // Frames per second
+                    qrbox: { width: 250, height: 250 } // Tamaño del cuadro de escaneo
+                },
+                onScanSuccess,
+                onScanError
+            ).catch(err => {
+                console.error(`Error iniciando el escaneo de QR: ${err}`);
+            });
+        });
+
         function onScanSuccess(decodedText, decodedResult) {
             // Verifica si el código QR tiene el formato esperado
             if (decodedText.startsWith("https://pipi-puntos.fly.dev/dni=")) {
@@ -103,20 +211,6 @@
         function onScanError(errorMessage) {
             console.warn(`Error de escaneo: ${errorMessage}`);
         }
-
-        // Crear el escáner de QR
-        const html5QrCode = new Html5Qrcode("qr-reader");
-        html5QrCode.start(
-            { facingMode: "environment" }, // Utilizar la cámara trasera en dispositivos móviles
-            {
-                fps: 10, // Frames per second
-                qrbox: { width: 250, height: 250 } // Tamaño del cuadro de escaneo
-            },
-            onScanSuccess,
-            onScanError
-        ).catch(err => {
-            console.error(`Error iniciando el escaneo de QR: ${err}`);
-        });
     </script>
 </body>
 </html>
